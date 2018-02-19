@@ -1,8 +1,8 @@
-package com.pda.nettycs.discart;
+package com.pda.nettycs.server.discart;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.pda.nettycs.NettyServer;
+import com.pda.nettycs.server.NettyServer;
 
 public class MainDiscardServer {
 

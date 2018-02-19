@@ -1,4 +1,4 @@
-package com.pda.nettycs.discart;
+package com.pda.nettycs.server.discart;
 
 /**
  * Hello world!

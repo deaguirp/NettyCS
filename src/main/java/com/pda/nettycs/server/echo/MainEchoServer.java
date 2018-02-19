@@ -1,8 +1,8 @@
-package com.pda.nettycs.echo;
+package com.pda.nettycs.server.echo;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.pda.nettycs.NettyServer;
+import com.pda.nettycs.server.NettyServer;
 
 public class MainEchoServer {
 

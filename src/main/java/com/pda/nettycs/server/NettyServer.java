@@ -1,4 +1,4 @@
-package com.pda.nettycs;
+package com.pda.nettycs.server;
 
 import com.google.inject.Inject;
 

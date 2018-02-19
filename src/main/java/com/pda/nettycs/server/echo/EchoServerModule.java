@@ -1,4 +1,4 @@
-package com.pda.nettycs.echo;
+package com.pda.nettycs.server.echo;
 
 import com.google.inject.AbstractModule;
 
