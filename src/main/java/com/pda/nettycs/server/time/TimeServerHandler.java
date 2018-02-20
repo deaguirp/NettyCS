@@ -1,11 +1,14 @@
 package com.pda.nettycs.server.time;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.extern.log4j.Log4j2;
 
+@Sharable
+@Log4j2
 public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
@@ -14,17 +17,15 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
         time.writeInt((int) (System.currentTimeMillis() / 1000L + 2208988800L));
         
         final ChannelFuture f = ctx.writeAndFlush(time); // (3)
-        f.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) {
-                assert f == future;
-                ctx.close();
-            }
-        }); // (4)
+        f.addListener(future -> {
+		    assert f == future;
+		    ctx.close();
+		}); // (4)
     }
     
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        log.error(cause);
         ctx.close();
     }
 }

@@ -1,9 +1,10 @@
-package com.pda.nettycs.server;
+package com.pda.nettycs.tcpdump;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
+import com.pda.nettycs.server.NettyServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -15,21 +16,32 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.log4j.Log4j2;
-    
-/**
- * Discards any incoming data.
- */
+
 @Log4j2
-public class NettyServer {
-    
-    private int port;
+public class TcpDump {
     
     @Inject
     private ChannelHandler handler; //Ojo esto obliga a que los handlers sean @Sharables
+
+    private int port = 8080;
+
+    private String host = "localhost";
+
+	private int hostPort = 8080;
     
-    public NettyServer withPort(int port) {
+    public TcpDump withPort(int port) {
         this.port = port;
         return this;
+    }
+    
+    public TcpDump targetHost(String host){
+    	this.host = host;
+    	return this;
+    }
+    
+    public TcpDump targetPort(int port){
+    	this.hostPort = port;
+    	return this;
     }
     
     public void run() throws InterruptedException {
@@ -44,7 +56,7 @@ public class NettyServer {
 
 				@Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(NettyServer.this.handler);
+                     ch.pipeline().addLast(TcpDump.this.handler);
                  }
              })
              .option(ChannelOption.SO_BACKLOG, 128)          // (5)
