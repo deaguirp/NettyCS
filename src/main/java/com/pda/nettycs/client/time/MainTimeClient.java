@@ -3,6 +3,7 @@ package com.pda.nettycs.client.time;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.pda.nettycs.client.NettyClient;
+import com.pda.nettycs.client.Target;
 
 public class MainTimeClient {
 
@@ -21,7 +22,18 @@ public class MainTimeClient {
         	host = "localhost";
             port = 8080;
         }
-        Injector injector = Guice.createInjector(new TimeClientModule());
-        injector.getInstance(NettyClient.class).withHost(host).withPort(port).run();
+        Injector injector = Guice.createInjector(new TimeClientModule(new Target() {
+			
+			@Override
+			public int getPort() {
+				return port;
+			}
+			
+			@Override
+			public String getHost() {
+				return host;
+			}
+		}));
+        injector.getInstance(NettyClient.class).run();
     }
 }

@@ -13,9 +13,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class NettyClient {
 	
 	@Inject
+	@ClientHandler
 	private ChannelHandler handler;
-	private String host="localhost";
-	private int port;
+	
+	@Inject
+	Target target;
 
 	public void run() throws InterruptedException{
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -28,23 +30,13 @@ public class NettyClient {
             b.handler(this.handler);
             
             // Start the client.
-            ChannelFuture f = b.connect(host, port).sync(); // (5)
+            ChannelFuture f = b.connect(target.getHost(), target.getPort()).sync(); // (5)
 
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
         }
-	}
-
-	public NettyClient withHost(String host) {
-		this.host=host;
-		return this;
-	}
-
-	public NettyClient withPort(int port) {
-		this.port = port;
-		return this;
 	}
 
 }

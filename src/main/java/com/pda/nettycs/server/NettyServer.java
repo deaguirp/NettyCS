@@ -25,6 +25,7 @@ public class NettyServer {
     private int port;
     
     @Inject
+    @ServerHandler
     private ChannelHandler handler; //Ojo esto obliga a que los handlers sean @Sharables
     
     public NettyServer withPort(int port) {
