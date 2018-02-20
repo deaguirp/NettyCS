@@ -20,7 +20,7 @@ public class ClientTask extends NettyClient implements Runnable {
 	}
 
 	public void shutDown() {
-		Implementar
+		getContext().
 	}
 	
 	
