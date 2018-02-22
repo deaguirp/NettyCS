@@ -1,13 +1,12 @@
 package com.pda.nettycs.tcpdump;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.log4j.Log4j2;
@@ -19,13 +18,22 @@ public class TcpDumpServerHandler extends ChannelInboundHandlerAdapter{
 
     @Inject
     Injector injector;
+
+	private TcpDumpMainClient client;
+
+
+	private ChannelHandlerContext context;
     
-    Map<ChannelHandlerContext, ClientTask> cCT = new HashMap<>();
-    
-    @Override
+	@Override
+	public void handlerAdded(ChannelHandlerContext ctx) {
+		context = ctx;
+	}
+
+	@Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		ClientTask ct = injector.getInstance(ClientTask.class);
-		cCT.put(ctx, ct);
+		TcpDumpMainClient ct = injector.getInstance(TcpDumpMainClient.class);
+		ct.setServerHandler(this);
+		setClient(ct);
 		EXECUTOR_SERVICE.submit(()->{
 			try{
 				ct.run();
@@ -34,21 +42,30 @@ public class TcpDumpServerHandler extends ChannelInboundHandlerAdapter{
 			}
 		});
     }
+    
+    private void setClient(TcpDumpMainClient ct) {
+		this.client = ct;
+	}
+    
+    public TcpDumpMainClient getMainClient() {
+		return client;
+	}
 
 	private void clientEnded(ChannelHandlerContext ctx) {
-		cCT.remove(ctx);
+		setClient(null);
 		ctx.close();
 	}
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    	ClientTask ct = cCT.remove(ctx);
+    	TcpDumpMainClient ct = getMainClient();
     	if (ct != null)
     		ct.shutDown();
     }
     
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
+		getMainClient().getClientHandler().getContext().write(msg);
     }
 
     @Override	
@@ -57,4 +74,8 @@ public class TcpDumpServerHandler extends ChannelInboundHandlerAdapter{
         log.error(cause);
         clientEnded(ctx);
     }
+
+	public ChannelHandlerContext getContext() {
+		return this.context;
+	}
 }
