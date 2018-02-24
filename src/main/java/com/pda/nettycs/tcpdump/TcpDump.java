@@ -27,7 +27,7 @@ public class TcpDump {
     	int p = getPort(args);
 		Target t = getTarget(args);
         Injector injector = Guice.createInjector(new TcpDumpModule(t));
-        
+        // TODO: mejorar con uso de multichanel> https://netty.io/4.0/api/io/netty/channel/group/ChannelGroup.html
         injector.getInstance(NettyServer.class)
         	.withPort(p)
         	.run();	
