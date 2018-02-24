@@ -16,6 +16,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClient {
 	
+	// Mejorar con: https://github.com/code4craft/netty-learning/blob/master/netty-3.7/src/main/java/org/jboss/netty/example/http/tunnel/HttpTunnelingClientExample.java
 	@Inject
 	private Collection<? extends ChannelHandler> handler;
 	private String host="localhost";
