@@ -25,7 +25,7 @@ public class TcpDumpMainClient extends NettyClient implements Runnable {
 	}
 
 	public TcpDumpClientHandler getClientHandler() {
-		return (TcpDumpClientHandler) this.target;
+		return (TcpDumpClientHandler) getHandler();
 	}
 
 	public void setServerHandler(TcpDumpServerHandler sh) {

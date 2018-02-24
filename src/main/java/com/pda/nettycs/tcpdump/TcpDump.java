@@ -6,11 +6,16 @@ import com.google.inject.Injector;
 import com.pda.nettycs.client.Target;
 import com.pda.nettycs.server.NettyServer;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class TcpDump {
     
+	private static final int DEFAULT_PORT = 8080;
+	private static final int DEFAULT_TARGET_PORT = 80;
+	private static final String DEFAULT_TARGET_HOST = "www.google.com";
 	@Inject
     Injector injector;
     
@@ -36,12 +41,12 @@ public class TcpDump {
         		host = args[1];
         		port = Integer.parseInt(args[2]);
         	}else{ 
-        		host = "localhost";
+        		host = DEFAULT_TARGET_HOST;
         		port = Integer.parseInt(args[1]);
         	}
         } else {
-        	host = "localhost";
-            port = 8080;
+        	host = DEFAULT_TARGET_HOST;
+            port = DEFAULT_TARGET_PORT;
         }
 		return new Target(){
 
@@ -61,8 +66,13 @@ public class TcpDump {
         if (args.length > 0) {
             p = Integer.parseInt(args[0]);
         } else {
-            p = 8080;
+            p = DEFAULT_PORT;
         }
 		return p;
+	}
+
+	public static void dump(String string, Object msg) {
+		System.out.println(string);
+		System.out.print(new String(ByteBufUtil.getBytes((ByteBuf) msg)));
 	}
 }

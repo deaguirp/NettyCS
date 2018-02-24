@@ -1,12 +1,12 @@
 package com.pda.nettycs.tcpdump;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.log4j.Log4j2;
@@ -65,7 +65,16 @@ public class TcpDumpServerHandler extends ChannelInboundHandlerAdapter{
     
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-		getMainClient().getClientHandler().getContext().write(msg);
+		TcpDump.dump(">>>>", msg);
+		ChannelHandlerContext c;
+		try {
+			c = getMainClient().getClientHandler().getContext().get();
+			c.write(msg);
+			c.flush();
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override	

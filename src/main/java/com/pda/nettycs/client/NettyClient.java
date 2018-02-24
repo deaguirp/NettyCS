@@ -8,11 +8,14 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public class NettyClient {
 	
 	@Inject
 	@ClientHandler
+	@Getter(AccessLevel.PROTECTED)
 	private ChannelHandler handler;
 	
 	@Inject
